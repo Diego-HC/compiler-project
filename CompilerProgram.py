@@ -1,6 +1,8 @@
 # Building a Lexer - Tokenizer
 
 from sly import Lexer, Parser
+import sys
+import os
 
 
 class BasicLexer(Lexer):
@@ -177,7 +179,7 @@ class BasicExecute:
         if node[0] == "if":
             condition = self.walkTree(node[1])
             print("Condition evaluated to:", condition)
-            print("node", node)
+            # print("node", node)
             if condition:
                 return self.walkTree(node[2])  # then branch
             elif node[3] is not None:
@@ -195,52 +197,93 @@ class BasicExecute:
                 return 0
 
 
+def execute_file(filename):
+    """Execute code from a file"""
+    if not os.path.exists(filename):
+        print(f"Error: File '{filename}' not found.")
+        return
+
+    try:
+        with open(filename, 'r') as file:
+            content = file.read()
+
+        lexer = BasicLexer()
+        parser = BasicParser()
+        env = {}
+
+        print(f"Executing file: {filename}")
+        print("-" * 40)
+
+        # Split content into lines and execute each non-empty line
+        lines = content.strip().split('\n')
+        for line_num, line in enumerate(lines, 1):
+            line = line.strip()
+            # Skip empty lines and comments
+            if line and not line.startswith('//'):
+                try:
+                    tree = parser.parse(lexer.tokenize(line))
+                    BasicExecute(tree, env)
+                except Exception as e:
+                    print(f"Error on line {line_num}: {e}")
+
+        print("-" * 40)
+        print("File execution completed.")
+
+    except Exception as e:
+        print(f"Error reading file '{filename}': {e}")
+
+
 # Displaying the Program output
 if __name__ == "__main__":
     lexer = BasicLexer()
     parser = BasicParser()
-    print(
-        "TC3002B Programming Language Program 1.0 (tags/v3.10.11:7d4cc5a, Jun 1 2025, 00:38:17"
-    )
-    print('Type "help", "credits" or "exit" to exit the program.')
-    # print("A00833623 - Ivan Romero")
-    # print("A00834015 - Diego Hernandez")
-    env = {}
 
-    while True:
+    # Check if a file argument was provided
+    if len(sys.argv) > 1:
+        filename = sys.argv[1]
+        execute_file(filename)
+    else:
+        # Interactive mode
+        print(
+            f"TC3002B Programming Language Program 1.0 (tags/v3.10.11, Jun 1 2025, 00:38:17)"
+        )
+        print('Type "help", "credits", "file <filename>" or "exit" to exit the program.')
+        env = {}
 
-        try:
-            text = input(">> ")
-
-        except EOFError:
-            break
-
-        if text:
-            if text.strip().lower() in ("exit", "quit"):
+        while True:
+            try:
+                text = input(">> ")
+            except EOFError:
                 break
-            elif text.strip().lower() == "help":
-                print("This is a simple interpreter for a basic programming language.")
-                print(
-                    "You can use variables, arithmetic operations, and if statements."
-                )
-                print("Type 'credits' to see the developers.")
-                print("Keywords: if, then, else, endif.")
-                print("Operators: +, -, *, /, <, >, =.")
-                print("Type 'exit' or 'quit' to exit the program.")
-                print("Type 'help' to see this message again.")
-                print("Type 'credits' to see the developers.")
-                print("Examples:")
-                print('>> x = 5')
-                print('>> y = "Hello"')
-                print('>> if x < 10 then y = "Less than 10" else y = "10 or more" endif')
-                print('>> y')
-                print('"Less than 10"')
-                continue
-            elif text.strip().lower() == "credits":
-                print(
-                    "Developed by Ivan Romero (A00833623) and Diego Hernandez (A00834015)."
-                )
-                continue
 
-            tree = parser.parse(lexer.tokenize(text))
-            BasicExecute(tree, env)
+            if text:
+                if text.strip().lower() in ("exit", "quit"):
+                    break
+                elif text.strip().lower() == "help":
+                    print(
+                        "This is a simple interpreter for a basic programming language.")
+                    print(
+                        "You can use variables, arithmetic operations, and if statements.")
+                    print("Type 'credits' to see the developers.")
+                    print("Keywords: if, then, else, endif.")
+                    print("Operators: +, -, *, /, <, >, =.")
+                    print("Type 'exit' or 'quit' to exit the program.")
+                    print("Type 'help' to see this message again.")
+                    print("Type 'credits' to see the developers.")
+                    print("Type 'file <filename>' to execute a file.")
+                    print("Examples:")
+                    print('>> x = 5')
+                    print('>> y = "Hello"')
+                    print(
+                        '>> if x < 10 then y = "Less than 10" else y = "10 or more" endif')
+                    print('>> y')
+                    print('"Less than 10"')
+                    continue
+                elif text.strip().lower() == "credits":
+                    print(
+                        "Developed by Ivan Romero (A00833623) and Diego Hernandez (A00834015)."
+                    )
+                    continue
+
+                tree = parser.parse(lexer.tokenize(text))
+                BasicExecute(tree, env)
