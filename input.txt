@@ -1,0 +1,6 @@
+x = 5
+
+x
+while x < 10 do x = x + 1 endwhile
+
+x

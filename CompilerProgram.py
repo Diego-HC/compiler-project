@@ -6,7 +6,7 @@ import os
 
 
 class BasicLexer(Lexer):
-    tokens = {NAME, NUMBER, STRING, IF, THEN, ELSE, ENDIF}
+    tokens = {NAME, NUMBER, STRING, IF, THEN, ELSE, ENDIF, WHILE, DO, ENDWHILE}
     ignore = "\t "
     literals = {"=", "+", "-", "/", "*", "(", ")", ",", ";", "<", ">", "!"}
 
@@ -17,6 +17,9 @@ class BasicLexer(Lexer):
     THEN = r"then"
     ELSE = r"else"
     ENDIF = r"endif"
+    WHILE = r"while"
+    DO = r"do"
+    ENDWHILE = r"endwhile"
 
     # store as raw strings
     NAME = r"[a-zA-Z_][a-zA-Z0-9_]*"
@@ -34,7 +37,7 @@ class BasicLexer(Lexer):
     def COMMENT(self, t):
         pass
 
-    # Newline token(used only for showing errors in new line)
+    # Newline token (used only for showing errors in new line)
     @_(r"\n+")
     def newline(self, t):
         self.lineno = t.value.count("\n")
@@ -45,9 +48,9 @@ class BasicParser(Parser):
     tokens = BasicLexer.tokens
 
     precedence = (
-        # ("left", "EQUALS_TO"),
         ("left", "<", ">"),
         ("left", "IF", "THEN", "ELSE", "ENDIF"),
+        ("left", "WHILE", "DO", "ENDWHILE"),
         ("left", "+", "-"),
         ("left", "*", "/"),
         ("right", "UMINUS"),
@@ -63,6 +66,10 @@ class BasicParser(Parser):
     @_("if_stmt")
     def statement(self, p):
         return p.if_stmt
+
+    @_("while_stmt")
+    def statement(self, p):
+        return p.while_stmt
 
     @_("var_assign")
     def statement(self, p):
@@ -116,6 +123,10 @@ class BasicParser(Parser):
     def if_stmt(self, p):
         return ("if", p.expr, p.statement0, p.statement1)
 
+    @_("WHILE expr DO statement ENDWHILE")
+    def while_stmt(self, p):
+        return ("while", p.expr, p.statement)
+
     @_('"-" expr %prec UMINUS')
     def expr(self, p):
         return p.expr
@@ -136,7 +147,7 @@ class BasicExecute:
         result = self.walkTree(tree)
         if result is not None and isinstance(result, int):
             print(result)
-        if isinstance(result, str) and result[0] == '"':
+        if isinstance(result, str) and result and result[0] == '"':
             print(result)
 
     def walkTree(self, node):
@@ -179,11 +190,15 @@ class BasicExecute:
         if node[0] == "if":
             condition = self.walkTree(node[1])
             print("Condition evaluated to:", condition)
-            # print("node", node)
             if condition:
                 return self.walkTree(node[2])  # then branch
             elif node[3] is not None:
                 return self.walkTree(node[3])  # else branch
+
+        if node[0] == "while":
+            while self.walkTree(node[1]):
+                self.walkTree(node[2])
+            return None
 
         if node[0] == "var_assign":
             self.env[node[1]] = self.walkTree(node[2])
@@ -204,7 +219,7 @@ def execute_file(filename):
         return
 
     try:
-        with open(filename, 'r') as file:
+        with open(filename, "r") as file:
             content = file.read()
 
         lexer = BasicLexer()
@@ -215,11 +230,11 @@ def execute_file(filename):
         print("-" * 40)
 
         # Split content into lines and execute each non-empty line
-        lines = content.strip().split('\n')
+        lines = content.strip().split("\n")
         for line_num, line in enumerate(lines, 1):
             line = line.strip()
             # Skip empty lines and comments
-            if line and not line.startswith('//'):
+            if line and not line.startswith("//"):
                 try:
                     tree = parser.parse(lexer.tokenize(line))
                     BasicExecute(tree, env)
@@ -247,7 +262,9 @@ if __name__ == "__main__":
         print(
             f"TC3002B Programming Language Program 1.0 (tags/v3.10.11, Jun 1 2025, 00:38:17)"
         )
-        print('Type "help", "credits", "file <filename>" or "exit" to exit the program.')
+        print(
+            'Type "help", "credits", "file <filename>" or "exit" to exit the program.'
+        )
         env = {}
 
         while True:
@@ -261,9 +278,11 @@ if __name__ == "__main__":
                     break
                 elif text.strip().lower() == "help":
                     print(
-                        "This is a simple interpreter for a basic programming language.")
+                        "This is a simple interpreter for a basic programming language."
+                    )
                     print(
-                        "You can use variables, arithmetic operations, and if statements.")
+                        "You can use variables, arithmetic operations, and if statements."
+                    )
                     print("Type 'credits' to see the developers.")
                     print("Keywords: if, then, else, endif.")
                     print("Operators: +, -, *, /, <, >, =.")
@@ -272,11 +291,12 @@ if __name__ == "__main__":
                     print("Type 'credits' to see the developers.")
                     print("Type 'file <filename>' to execute a file.")
                     print("Examples:")
-                    print('>> x = 5')
+                    print(">> x = 5")
                     print('>> y = "Hello"')
                     print(
-                        '>> if x < 10 then y = "Less than 10" else y = "10 or more" endif')
-                    print('>> y')
+                        '>> if x < 10 then y = "Less than 10" else y = "10 or more" endif'
+                    )
+                    print(">> y")
                     print('"Less than 10"')
                     continue
                 elif text.strip().lower() == "credits":
