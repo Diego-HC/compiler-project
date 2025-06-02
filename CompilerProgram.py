@@ -223,6 +223,18 @@ if __name__ == "__main__":
                 print(
                     "You can use variables, arithmetic operations, and if statements."
                 )
+                print("Type 'credits' to see the developers.")
+                print("Keywords: if, then, else, endif.")
+                print("Operators: +, -, *, /, <, >, =.")
+                print("Type 'exit' or 'quit' to exit the program.")
+                print("Type 'help' to see this message again.")
+                print("Type 'credits' to see the developers.")
+                print("Examples:")
+                print('>> x = 5')
+                print('>> y = "Hello"')
+                print('>> if x < 10 then y = "Less than 10" else y = "10 or more" endif')
+                print('>> y')
+                print('"Less than 10"')
                 continue
             elif text.strip().lower() == "credits":
                 print(
