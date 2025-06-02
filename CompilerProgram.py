@@ -303,6 +303,8 @@ if __name__ == "__main__":
                     print(
                         "Developed by Ivan Romero (A00833623) and Diego Hernandez (A00834015)."
                     )
+                    print(
+                        "Class TC3002B - Programming Language. Compiler Module by Dr. Kingsley Okoye.")
                     continue
 
                 tree = parser.parse(lexer.tokenize(text))
