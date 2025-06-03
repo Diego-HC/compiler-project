@@ -7,8 +7,18 @@ import os
 
 # Class lexer using sly's lexer
 class BasicLexer(Lexer):
-    tokens = {NAME, NUMBER, STRING, IF, THEN, ELSE,
-              ENDIF, WHILE, DO, ENDWHILE}  # type: ignore
+    tokens = {
+        NAME,
+        NUMBER,
+        STRING,
+        IF,
+        THEN,
+        ELSE,
+        ENDIF,
+        WHILE,
+        DO,
+        ENDWHILE,
+    }
     ignore = "\t "
     # Define the literals used in the language
     # These are the symbols that are not keywords but are used in expressions
@@ -58,6 +68,9 @@ class BasicParser(Parser):
     # Define precedence of operators
     # This defines the order of operations for the language
     precedence = (
+        ("left", "<", ">"),
+        ("left", "IF", "THEN", "ELSE", "ENDIF"),
+        ("left", "WHILE", "DO", "ENDWHILE"),
         ("left", "+", "-"),
         ("left", "*", "/"),
         ("right", "UMINUS"),
@@ -281,9 +294,7 @@ if __name__ == "__main__":
         print(
             f"TC3002B Programming Language Program 1.0 (tags/v3.10.11, Jun 1 2025, 00:38:17)"
         )
-        print(
-            'Type "help", "credits",  or "exit" to exit the program.'
-        )
+        print('Type "help", "credits",  or "exit" to exit the program.')
         env = {}
 
         while True:
@@ -318,7 +329,8 @@ if __name__ == "__main__":
                     print(">> y")
                     print('"Less than 10"')
                     print(
-                        "In order to execute a file, run the program and then the <filename>'.")
+                        "In order to execute a file, run the program and then the <filename>'."
+                    )
                     print("For example: python CompilerProgram.py test.txt")
                     print("or: ./compiler test.txt")
                     continue
