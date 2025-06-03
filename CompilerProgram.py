@@ -5,14 +5,19 @@ import sys
 import os
 
 
+# Class lexer using sly's lexer
 class BasicLexer(Lexer):
     tokens = {NAME, NUMBER, STRING, IF, THEN, ELSE, ENDIF, WHILE, DO, ENDWHILE}
     ignore = "\t "
+    # Define the literals used in the language
+    # These are the symbols that are not keywords but are used in expressions
     literals = {"=", "+", "-", "/", "*", "(", ")", ",", ";", "<", ">", "!"}
 
     # Define tokens as regular expressions
 
     # Keywords
+    # These are the reserved words in the language
+    # They cannot be used as identifiers
     IF = r"if"
     THEN = r"then"
     ELSE = r"else"
@@ -21,7 +26,8 @@ class BasicLexer(Lexer):
     DO = r"do"
     ENDWHILE = r"endwhile"
 
-    # store as raw strings
+    # Identifiers and strings
+    # Identifiers' first character must be a letter or underscore, followed by letters, digits, or underscores
     NAME = r"[a-zA-Z_][a-zA-Z0-9_]*"
     STRING = r"\".*?\""
 
@@ -29,6 +35,7 @@ class BasicLexer(Lexer):
     @_(r"\d+")
     def NUMBER(self, t):
         # convert it into a python integer
+        # right now the regex only matches integers not floats
         t.value = int(t.value)
         return t
 
@@ -47,10 +54,9 @@ class BasicParser(Parser):
     # tokens are passed from lexer to parser
     tokens = BasicLexer.tokens
 
+    # Define precedence of operators
+    # This defines the order of operations for the language
     precedence = (
-        ("left", "<", ">"),
-        ("left", "IF", "THEN", "ELSE", "ENDIF"),
-        ("left", "WHILE", "DO", "ENDWHILE"),
         ("left", "+", "-"),
         ("left", "*", "/"),
         ("right", "UMINUS"),
@@ -59,6 +65,7 @@ class BasicParser(Parser):
     def __init__(self):
         self.env = {}
 
+    # Define the grammar rules
     @_("")
     def statement(self, p):
         pass
@@ -213,7 +220,7 @@ class BasicExecute:
 
 
 def execute_file(filename):
-    """Execute code from a file"""
+    """Execute code from a file by using: python CompilerProgram.py <filename> or ./compiler <filename>"""
     if not os.path.exists(filename):
         print(f"Error: File '{filename}' not found.")
         return
@@ -233,8 +240,7 @@ def execute_file(filename):
         lines = content.strip().split("\n")
         for line_num, line in enumerate(lines, 1):
             line = line.strip()
-            # Skip empty lines and comments
-            if line and not line.startswith("//"):
+            if line:
                 try:
                     tree = parser.parse(lexer.tokenize(line))
                     BasicExecute(tree, env)
