@@ -1,0 +1,57 @@
+// Test file 4: String Operations and Mixed Data Types
+// This file tests string assignments and mixed operations
+
+// Basic string assignments
+name = "Alice"
+name
+greeting = "Hello"
+greeting
+message = "World"
+message
+
+// String assignments with different content
+empty = ""
+empty
+quote = "Programming is fun!"
+quote
+
+// Mixed variable types
+age = 25
+name = "Bob"
+score = 95
+
+// Display mixed types
+age
+name
+score
+
+// Reassigning variables with different types
+temp = 100
+temp
+temp = "Changed to string"
+temp
+temp = 42
+temp
+
+// Multiple string variables
+first = "Hello"
+second = "there"
+third = "everyone"
+
+first
+second
+third
+
+// Testing string with numbers in quotes
+number_string = "123"
+number_string
+real_number = 123
+real_number
+
+// Special characters in strings
+special = "!@#$%^&*()"
+special
+
+// Long string
+long_text = "This is a longer string to test string handling capabilities"
+long_text

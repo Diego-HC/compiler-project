@@ -1,0 +1,46 @@
+// Test file 1: Arithmetic Operations and Variables
+// This file tests basic arithmetic operations, variable assignments, and precedence
+
+// Basic variable assignments
+x = 10
+y = 5
+z = 3
+
+// Display initial values
+x
+y
+z
+
+// Basic arithmetic operations
+str = "Basic Arithmetic Operations"
+str
+
+sum = x + y
+sum
+difference = x - y
+difference
+product = x * y
+product
+
+// Test operator precedence
+str = "Test operator precedence"
+str
+
+result1 = 2 + 3 * 4
+result1
+result2 = (2 + 3) * 4
+result2
+
+// Complex expressions
+str = "Complex expressions"
+str
+
+complex = x + y * z - 2
+complex
+
+// Chained operations
+str = "Chained operations"
+str
+
+final = x + y - z * 2 + 1
+final

@@ -1,0 +1,18 @@
+// Test file 3: While Loops
+// This file tests while loop functionality with various scenarios
+
+counter = 1
+while counter < 6 do counter = counter + 1 endwhile
+counter
+
+countdown = 5
+while countdown > 0 do countdown = countdown - 1 endwhile
+countdown
+
+x = 2
+while x < 20 do x = x * 2 endwhile
+x
+
+value = 10
+while value < 100 do value = value * 2 endwhile
+value

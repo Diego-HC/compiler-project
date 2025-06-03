@@ -1,0 +1,67 @@
+// Test file 9: Edge Cases with Single-line Control Structures
+// This file tests boundary conditions and edge cases
+
+// Testing with zero values
+zero = 0
+one = 1
+result = 5
+
+if zero < one then result = 10 endif
+result
+
+while zero < 3 do zero = zero + 1 endwhile
+zero
+
+// Testing with equal values
+equal_a = 5
+equal_b = 5
+comparison = 0
+
+if equal_a > equal_b then comparison = 1 else comparison = 2 endif
+comparison
+
+// Loop that doesn't execute
+no_execute = 10
+while no_execute < 5 do no_execute = no_execute + 1 endwhile
+no_execute
+
+// Single iteration loop
+single = 4
+while single < 5 do single = single + 1 endwhile
+single
+
+// Large number operations
+large = 100
+small = 1
+
+while small < 10 do small = small * 2 endwhile
+if large > small then large = 50 endif
+
+small
+large
+
+// String edge cases
+empty_like = "x"
+full = "complete"
+flag = 0
+
+if flag < 1 then empty_like = "" endif
+empty_like
+
+// Boundary arithmetic
+boundary = 9
+threshold = 10
+indicator = 0
+
+if boundary < threshold then indicator = 1 endif
+while boundary < threshold do boundary = boundary + 1 endwhile
+
+indicator
+boundary
+
+// Multiple consecutive operations
+chain = 1
+while chain < 4 do chain = chain + 1 endwhile
+while chain < 7 do chain = chain + 1 endwhile
+if chain > 5 then chain = chain + 10 endif
+chain
