@@ -263,7 +263,7 @@ if __name__ == "__main__":
             f"TC3002B Programming Language Program 1.0 (tags/v3.10.11, Jun 1 2025, 00:38:17)"
         )
         print(
-            'Type "help", "credits", "file <filename>" or "exit" to exit the program.'
+            'Type "help", "credits",  or "exit" to exit the program.'
         )
         env = {}
 
@@ -298,6 +298,10 @@ if __name__ == "__main__":
                     )
                     print(">> y")
                     print('"Less than 10"')
+                    print(
+                        "In order to execute a file, run the program and then the <filename>'.")
+                    print("For example: python CompilerProgram.py test.txt")
+                    print("or: ./compiler test.txt")
                     continue
                 elif text.strip().lower() == "credits":
                     print(
