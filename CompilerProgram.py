@@ -122,6 +122,8 @@ class BasicParser(Parser):
     def expr(self, p):
         return ("gt", p.expr0, p.expr1)
 
+    # Adding the if and while statements
+    # IF works like: if expr then statement [else statement] endif
     @_("IF expr THEN statement ENDIF")
     def if_stmt(self, p):
         return ("if", p.expr, p.statement, None)
@@ -130,6 +132,7 @@ class BasicParser(Parser):
     def if_stmt(self, p):
         return ("if", p.expr, p.statement0, p.statement1)
 
+    # WHILE works like: while expr do statement endwhile
     @_("WHILE expr DO statement ENDWHILE")
     def while_stmt(self, p):
         return ("while", p.expr, p.statement)
@@ -194,16 +197,25 @@ class BasicExecute:
         elif node[0] == "gt":
             return self.walkTree(node[1]) > self.walkTree(node[2])
 
+        # Handle if statements
         if node[0] == "if":
+            # For the if statement, we first evaluate the condition
             condition = self.walkTree(node[1])
             print("Condition evaluated to:", condition)
+            # If the condition is true, we execute the then branch
+            # If the condition is false and there is an else branch and there is an else branch, we execute the else branch
             if condition:
                 return self.walkTree(node[2])  # then branch
             elif node[3] is not None:
                 return self.walkTree(node[3])  # else branch
 
+        # Handle while statements
+        # For the while statement, we keep executing the body as long as the condition is true
+        # We dont evaluate the condition and save the result value in a variable as we did in the if statement
+        # Instead, we keep checking the condition in each iteration since the condition will change
         if node[0] == "while":
             while self.walkTree(node[1]):
+                # Execute the body of the while loop
                 self.walkTree(node[2])
             return None
 
