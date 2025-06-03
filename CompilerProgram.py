@@ -7,7 +7,8 @@ import os
 
 # Class lexer using sly's lexer
 class BasicLexer(Lexer):
-    tokens = {NAME, NUMBER, STRING, IF, THEN, ELSE, ENDIF, WHILE, DO, ENDWHILE}
+    tokens = {NAME, NUMBER, STRING, IF, THEN, ELSE,
+              ENDIF, WHILE, DO, ENDWHILE}  # type: ignore
     ignore = "\t "
     # Define the literals used in the language
     # These are the symbols that are not keywords but are used in expressions
@@ -32,7 +33,7 @@ class BasicLexer(Lexer):
     STRING = r"\".*?\""
 
     # Number token
-    @_(r"\d+")
+    @_(r"\d+")  # type: ignore
     def NUMBER(self, t):
         # convert it into a python integer
         # right now the regex only matches integers not floats
@@ -40,12 +41,12 @@ class BasicLexer(Lexer):
         return t
 
     # Comment token
-    @_(r"//.*")
+    @_(r"//.*")  # type: ignore
     def COMMENT(self, t):
         pass
 
     # Newline token (used only for showing errors in new line)
-    @_(r"\n+")
+    @_(r"\n+")  # type: ignore
     def newline(self, t):
         self.lineno = t.value.count("\n")
 
@@ -66,86 +67,86 @@ class BasicParser(Parser):
         self.env = {}
 
     # Define the grammar rules
-    @_("")
+    @_("")  # type: ignore
     def statement(self, p):
         pass
 
-    @_("if_stmt")
+    @_("if_stmt")  # type: ignore
     def statement(self, p):
         return p.if_stmt
 
-    @_("while_stmt")
+    @_("while_stmt")  # type: ignore
     def statement(self, p):
         return p.while_stmt
 
-    @_("var_assign")
+    @_("var_assign")  # type: ignore
     def statement(self, p):
         return p.var_assign
 
-    @_('NAME "=" expr')
+    @_('NAME "=" expr')  # type: ignore
     def var_assign(self, p):
         return ("var_assign", p.NAME, p.expr)
 
-    @_('NAME "=" STRING')
+    @_('NAME "=" STRING')  # type: ignore
     def var_assign(self, p):
         return ("var_assign", p.NAME, p.STRING)
 
-    @_("expr")
+    @_("expr")  # type: ignore
     def statement(self, p):
         return p.expr
 
-    @_('"(" expr ")"')
+    @_('"(" expr ")"')  # type: ignore
     def expr(self, p):
         return p.expr
 
-    @_('expr "+" expr')
+    @_('expr "+" expr')  # type: ignore
     def expr(self, p):
         return ("add", p.expr0, p.expr1)
 
-    @_('expr "-" expr')
+    @_('expr "-" expr')  # type: ignore
     def expr(self, p):
         return ("sub", p.expr0, p.expr1)
 
-    @_('expr "*" expr')
+    @_('expr "*" expr')  # type: ignore
     def expr(self, p):
         return ("mul", p.expr0, p.expr1)
 
-    @_('expr "/" expr')
+    @_('expr "/" expr')  # type: ignore
     def expr(self, p):
         return ("div", p.expr0, p.expr1)
 
-    @_('expr "<" expr')
+    @_('expr "<" expr')  # type: ignore
     def expr(self, p):
         return ("lt", p.expr0, p.expr1)
 
-    @_('expr ">" expr')
+    @_('expr ">" expr')  # type: ignore
     def expr(self, p):
         return ("gt", p.expr0, p.expr1)
 
     # Adding the if and while statements
     # IF works like: if expr then statement [else statement] endif
-    @_("IF expr THEN statement ENDIF")
+    @_("IF expr THEN statement ENDIF")  # type: ignore
     def if_stmt(self, p):
         return ("if", p.expr, p.statement, None)
 
-    @_("IF expr THEN statement ELSE statement ENDIF")
+    @_("IF expr THEN statement ELSE statement ENDIF")  # type: ignore
     def if_stmt(self, p):
         return ("if", p.expr, p.statement0, p.statement1)
 
     # WHILE works like: while expr do statement endwhile
-    @_("WHILE expr DO statement ENDWHILE")
+    @_("WHILE expr DO statement ENDWHILE")  # type: ignore
     def while_stmt(self, p):
         return ("while", p.expr, p.statement)
 
-    @_('"-" expr %prec UMINUS')
+    @_('"-" expr %prec UMINUS')  # type: ignore
     def expr(self, p):
         return p.expr
 
-    @_("NAME")
+    @_("NAME")  # type: ignore
     def expr(self, p):
         return ("var", p.NAME)
 
-    @_("NUMBER")
+    @_("NUMBER")  # type: ignore
     def expr(self, p):
         return ("num", p.NUMBER)
 
@@ -326,7 +327,8 @@ if __name__ == "__main__":
                         "Developed by Ivan Romero (A00833623) and Diego Hernandez (A00834015)."
                     )
                     print(
-                        "Class TC3002B - Programming Language. Compiler Module by Dr. Kingsley Okoye.")
+                        "Class TC3002B - Programming Language. Compiler Module by Dr. Kingsley Okoye."
+                    )
                     continue
 
                 tree = parser.parse(lexer.tokenize(text))
