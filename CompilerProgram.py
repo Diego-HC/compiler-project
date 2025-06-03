@@ -319,7 +319,6 @@ if __name__ == "__main__":
                     print("Type 'exit' or 'quit' to exit the program.")
                     print("Type 'help' to see this message again.")
                     print("Type 'credits' to see the developers.")
-                    print("Type 'file <filename>' to execute a file.")
                     print("Examples:")
                     print(">> x = 5")
                     print('>> y = "Hello"')
